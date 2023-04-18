@@ -104,7 +104,7 @@ void displite::reset() {
 	std::string temp{""};
 	device->hid_write(reset_cmd);
 	device->hid_read(temp);
-	std::this_thread::sleep_for(std::chrono::seconds(2));
+	std::this_thread::sleep_for(std::chrono::seconds(3));
 	device.reset();
 	init();
 }
