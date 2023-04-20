@@ -11,4 +11,8 @@ HOMEPAGE_URL "https://github.com/displite/displite_lib"
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     add_subdirectory(linux)
+elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+    message(FATAL_ERROR "Windows is currently not supported by this version of lib")
+else()
+    message(FATAL_ERROR "OS not supported")
 endif()
