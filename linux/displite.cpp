@@ -44,6 +44,10 @@ bool displite::get_dev_path() {
 		info.dev_path = std::string(devpath);
 		result = true;
 		sd_device_unref(pdev);
+
+		#ifndef DEBUG
+		break;
+		#endif
 	}
 
 	sd_device_enumerator_unref(enumerator);
