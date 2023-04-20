@@ -1,4 +1,5 @@
 #include <systemd/sd-device.h>
+#include <systemd/sd-journal.h>
 #include "displite.h"
 #include <cstring>
 #include "exceptions.h"
@@ -35,6 +36,10 @@ bool displite::get_dev_path() {
 		sd_device_get_sysattr_value(pdev, "serial", &id_serial);
 		sd_device_get_sysattr_value(pdev, "product", &product);
 
+		#ifdef DEBUG
+		sd_journal_print(LOG_INFO, "Found displite device having product: %s; Serial: %s", product, id_serial);
+		#endif
+
 		if (strcmp(id_serial, info.serial.c_str()) != 0 || strcmp(product, info.product.c_str()) != 0) {
 			sd_device_unref(pdev);
 			continue;
@@ -56,9 +61,19 @@ bool displite::get_dev_path() {
 }
 
 void displite::init() {
+	#ifdef DEBUG
+		sd_journal_print(LOG_INFO, "finding device");
+	#endif
 	if (!get_dev_path()) {
+		#ifdef DEBUG
+			sd_journal_print(LOG_ERR, "Could not find device");
+		#endif
 		throw(device_not_found("device with serial, product - "+ info.serial + ", " + info.product +"not found"));
 	}
+
+	#ifdef DEBUG
+		sd_journal_print(LOG_INFO, "device found");
+	#endif
 
 	device = std::make_unique<hidraw>(info.dev_path);
 }
@@ -107,7 +122,13 @@ std::string displite::send_cmd(const std::string &cmd) {
 void displite::reset() {
 	std::string temp{""};
 	device->hid_write(reset_cmd);
+	#ifdef DEBUG
+		sd_journal_print(LOG_INFO, "reset command sent");
+	#endif
 	device->hid_read(temp);
+	#ifdef DEBUG
+		sd_journal_print(LOG_INFO, "waiting for device to reset");
+	#endif
 	std::this_thread::sleep_for(std::chrono::seconds(3));
 	device.reset();
 	init();
