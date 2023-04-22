@@ -68,7 +68,7 @@ void displite::init() {
 		#ifdef DEBUG
 			sd_journal_print(LOG_ERR, "Could not find device");
 		#endif
-		throw(device_not_found("device with serial, product - "+ info.serial + ", " + info.product +"not found"));
+		throw(device_not_found("device with serial: " + info.serial + " and product: " + info.product + " not found"));
 	}
 
 	#ifdef DEBUG
