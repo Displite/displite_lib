@@ -91,7 +91,11 @@ displite::displite(std::string serial, std::string product) {
 }
 
 displite::~displite() {
-	device->hid_write(reset_cmd);
+	try {
+		device->hid_write(reset_cmd);
+	} catch(std::exception &e) {
+		
+	}
 }
 
 bool displite::send_data(const std::string &data) {
